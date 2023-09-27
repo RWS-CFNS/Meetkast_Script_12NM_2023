@@ -1,5 +1,34 @@
+# #!/usr/bin/env python
+# import pika, sys, os
+
+# def main():
+#     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+#     channel = connection.channel()
+
+#     channel.queue_declare(queue='hello')
+
+#     def callback(ch, method, properties, body):
+#         print(f" [x] Received {body}")
+
+#     channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+
+#     print(' [*] Waiting for messages. To exit press CTRL+C')
+#     channel.start_consuming()
+
+# if __name__ == '__main__':
+#     try:
+#         main()
+#     except KeyboardInterrupt:
+#         print('Interrupted')
+#         try:
+#             sys.exit(0)
+#         except SystemExit:
+#             os._exit(0)
+
 #!/usr/bin/env python
-import pika, sys, os
+#!/usr/bin/env python
+import pika
+import json
 
 def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
@@ -8,7 +37,11 @@ def main():
     channel.queue_declare(queue='hello')
 
     def callback(ch, method, properties, body):
-        print(f" [x] Received {body}")
+        message_data = json.loads(body)  # Decodeer het JSON-bericht
+        print(f" [x] Received JSON: {message_data}")
+        print(f"Name: {message_data['name']}")
+        print(f"Email: {message_data['email']}")
+        print(f"Age: {message_data['age']}")
 
     channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
 
@@ -20,7 +53,5 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         print('Interrupted')
-        try:
-            sys.exit(0)
-        except SystemExit:
-            os._exit(0)
+
+        print('Interrupted')
