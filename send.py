@@ -13,7 +13,7 @@ def publish_message(channel, message_data):
         body=message,
         properties=pika.BasicProperties(
             content_type="application/json",
-            headers={'TypeId': 'nl.cfns.entity.Measurement'},
+            headers={'_TypeId_': 'nl.cfns.entity.Measurement'},
             content_encoding='UTF-8',
             delivery_mode=2,  # maak het bericht persistent
         )
