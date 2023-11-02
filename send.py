@@ -3,9 +3,6 @@ import json
 from datetime import datetime
 
 def publish_message(channel, message_data):
-    # Handmatig omzetten van datetime naar ISO 8601-string
-    message_data["time"] = message_data["time"].isoformat()
-
     message = json.dumps(message_data)
     channel.basic_publish(
         exchange='spring-boot-exchange',
@@ -13,16 +10,22 @@ def publish_message(channel, message_data):
         body=message,
         properties=pika.BasicProperties(
             content_type="application/json",
-            headers={'_TypeId_': 'nl.cfns.entity.Measurement'},
+            headers={'TypeId': 'nl.cfns.entity.Measurement'},
             content_encoding='UTF-8',
             delivery_mode=2,  # maak het bericht persistent
         )
     )
     print("Sent", message)
 
+# Huidige datetime verkrijgen
+current_time = datetime.now()
+
+# Convert the datetime object to an ISO 8601 formatted string
+current_time_iso = current_time.isoformat()
+
 message_data = {
     "id": 2003,
-    "time": '2023-11-02 09:52:10.155',  # Vervang dit met jouw datetime-object
+    "time": current_time_iso,  # Gebruik het ISO 8601-formatted string
     "latency": 1000,
     "upload": 2000,
     "download": 5000,
