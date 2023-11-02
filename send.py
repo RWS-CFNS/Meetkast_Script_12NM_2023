@@ -22,7 +22,7 @@ def publish_message(channel, message_data):
 
 message_data = {
     "id": 2003,
-    "time": datetime(2023, 11, 1, 14, 0, 0, 50000),  # Vervang dit met jouw datetime-object
+    "time": '2023-11-02 09:52:10.155',  # Vervang dit met jouw datetime-object
     "latency": 1000,
     "upload": 2000,
     "download": 5000,
