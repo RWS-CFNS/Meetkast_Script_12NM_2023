@@ -10,9 +10,10 @@ def publish_message(channel, message_data):
         body=message,
         properties=pika.BasicProperties(
             content_type="application/json",
-            headers={'TypeId': 'nl.cfns.entity.Measurement'},
             content_encoding='UTF-8',
+            headers={'TypeId': 'nl.cfns.entity.Measurement'},
             delivery_mode=2,  # maak het bericht persistent
+            priority=0
         )
     )
     print("Sent", message)
