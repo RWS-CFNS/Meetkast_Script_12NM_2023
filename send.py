@@ -2,18 +2,18 @@ import pika
 import json
 from datetime import datetime
 
-Maak een verbinding met de RabbitMQ server
+# Maak een verbinding met de RabbitMQ server
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
 
-Huidige datetime verkrijgen
+# Huidige datetime verkrijgen
 current_time = datetime.now()
 
-Convert the datetime object to an ISO 8601 formatted string
+# Convert the datetime object to an ISO 8601 formatted string
 current_time_iso = current_time.isoformat()
 
 
-Maak een dictionary met je data
+# Maak een dictionary met je data
 data = {
     # "id": 2003,
     # "time": current_time_iso,  # Gebruik het ISO 8601-formatted string
@@ -31,20 +31,21 @@ data = {
     "id":None,"time":1699957465299,"latency":56,"upload":54.96,"download":24.51,"mnoString":"mollitia","latitude":3.169556,"longitude":3.341578,"rssi":-70,"rsrq":0,"rsrp":0,"sinr":0
 }
 
-Converteer de dictionary naar een JSON string
+# Converteer de dictionary naar een JSON string
 message = json.dumps(data)
 
-print(message)
-Stel de berichteigenschappen in
+# print(message)
+
+# Stel de berichteigenschappen in
 properties = pika.BasicProperties(
     content_type="application/json",
     content_encoding='UTF-8',
-    headers={'TypeId': 'nl.cfns.entity.Measurement'},
+    headers={'__TypeId__': 'nl.cfns.entity.Measurement'},
     delivery_mode=2,  # maak het bericht persistent
     priority=0
 )
 
-Stuur het bericht
+# Stuur het bericht
 channel.basic_publish(
     exchange='spring-boot-exchange',
     routing_key='key.cfns.measurement',
@@ -54,5 +55,5 @@ channel.basic_publish(
 
 print(" [x] Sent %r" % message)
 
-Sluit de verbinding
+# Sluit de verbinding
 connection.close()
