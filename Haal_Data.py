@@ -2,10 +2,10 @@ import psycopg2
 
 # Verbinding maken met de database
 conn = psycopg2.connect(
-    dbname="jouw_database_naam",
-    user="jouw_gebruikersnaam",
-    password="jouw_wachtwoord",
-    host="localhost"  # of het IP-adres van de database
+    dbname="test_db",
+    user="postgres",
+    password="stagecfns",
+    host="127.0.0.1"  # of het IP-adres van de database
 )
 
 # Cursor maken om query's uit te voeren
