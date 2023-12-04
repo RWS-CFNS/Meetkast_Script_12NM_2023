@@ -13,16 +13,9 @@ current_time = int(time.time())
 
 # Maak een dictionary met je data
 data = {
-  # "id": None,
-  # "time": current_time,
-  # "temp": 25.3,
-  # "humid": 68.7,
-  # "windDirection": 45,
-  # "windspeed": 10,
-  # "dauw": 15.8,
-  # "pressure": 1012.5
 
-  "id":None,"time":1701436372257,"temp":71.3,"humid":1.0,"windDirection":23,"windspeed":10.8,"dauw":57.0,"pressure":97.2
+"id":None,"mnc":5,"mcc":6,"lac":2,"longitude":48.03,"status":"INACTIVE","latitude":49.5,"simulated":True
+
 }
 
 # Converteer de dictionary naar een JSON string
