@@ -12,7 +12,7 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 # Voorbeeldquery om data op te halen
-query = "SELECT * FROM jouw_tabel_naam"
+query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'personen'"
 
 # Uitvoeren van de query
 cur.execute(query)
