@@ -1,6 +1,5 @@
 import pika
 import json
-from datetime import datetime
 import time
 
 # Maak een verbinding met de RabbitMQ server
@@ -14,7 +13,13 @@ current_time = int(time.time())
 # Maak een dictionary met je data
 data = {
 
-"id":None,"mnc":5,"mcc":6,"lac":2,"longitude":48.03,"status":"INACTIVE","latitude":49.5,"simulated":True
+"mnc":5,
+"mcc":6,
+"lac":2,
+"longitude":48.03,
+"status":"INACTIVE",
+"latitude":49.5,
+"simulated":True
 
 }
 
@@ -27,7 +32,7 @@ message = json.dumps(data)
 properties = pika.BasicProperties(
     content_type="application/json",
     content_encoding='UTF-8',
-    headers={'__TypeId__': 'nl.cfns.entity.Measuringbox'},
+    headers={'TypeId': 'nl.cfns.dto.MeasuringboxDto'},
     delivery_mode=2,  # maak het bericht persistent
     priority=0
 )
@@ -35,7 +40,7 @@ properties = pika.BasicProperties(
 # Stuur het bericht
 channel.basic_publish(
     exchange='spring-boot-exchange',
-    routing_key='key.cfns.measuringbox',
+    routing_key='key.cfns.measuringbox2',
     body=message,
     properties=properties
 )

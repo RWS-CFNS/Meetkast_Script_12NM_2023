@@ -1,6 +1,5 @@
 import pika
 import json
-from datetime import datetime
 import time
 
 # Maak een verbinding met de RabbitMQ server
@@ -22,7 +21,13 @@ data = {
   # "dauw": 15.8,
   # "pressure": 1012.5
 
-  "id":None,"time":1701436372257,"temp":71.3,"humid":1.0,"windDirection":23,"windspeed":10.8,"dauw":57.0,"pressure":97.2
+  "time":current_time,
+  "temp":71.3,
+  "humid":1.0,
+  "windDirection":23,
+  "windspeed":10.8,
+  "dauw":57.0,
+  "pressure":97.2
 }
 
 # Converteer de dictionary naar een JSON string
@@ -34,7 +39,7 @@ message = json.dumps(data)
 properties = pika.BasicProperties(
     content_type="application/json",
     content_encoding='UTF-8',
-    headers={'TypeId': 'nl.cfns.entity.WeatherMeasurement'},
+    headers={'__TypeId__': 'nl.cfns.entity.WeatherMeasurementDto'},
     delivery_mode=2,  # maak het bericht persistent
     priority=0
 )
