@@ -18,7 +18,7 @@ data = {
 "lac":2,
 "longitude":48.03,
 "status":"INACTIVE",
-"latitude":49.5,
+"latitude":49.50,
 "simulated":True
 
 }
@@ -32,7 +32,7 @@ message = json.dumps(data)
 properties = pika.BasicProperties(
     content_type="application/json",
     content_encoding='UTF-8',
-    headers={'TypeId': 'nl.cfns.dto.MeasuringboxDto'},
+    headers={'__TypeId__': 'nl.cfns.dto.MeasuringboxDto'},
     delivery_mode=2,  # maak het bericht persistent
     priority=0
 )
