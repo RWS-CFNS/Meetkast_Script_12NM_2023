@@ -46,7 +46,7 @@ print("Verbindingsstatus:", conn.status)
 cur = conn.cursor()
 
 # Query om aantal rijen in de 'personen'-tabel te controleren
-cur.execute('SELECT COUNT(*) FROM public.personen;')
+cur.execute('SELECT COUNT(*) FROM personen.naam_leeftijd;')
 count = cur.fetchone()[0]
 
 if count == 0:
@@ -55,7 +55,7 @@ else:
     print(f"Aantal rijen in 'personen'-tabel: {count}")
 
 # Query om gegevens uit de 'personen'-tabel op te halen
-cur.execute('SELECT * FROM public.personen;')
+cur.execute('SELECT * FROM personen.naam_leeftijd;')
 
 # Alle rijen ophalen
 rows = cur.fetchall()
