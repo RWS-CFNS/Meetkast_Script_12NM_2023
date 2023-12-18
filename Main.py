@@ -4,15 +4,15 @@ import subprocess
 
 def run_measurement_scripts():
     # Voer MEASUREMENT.py uit
-    subprocess.run(["python", "MEASUREMENT.py"])
+    subprocess.run(["python3", "MEASUREMENT.py"])
 
 def run_measuringbox_scripts():
     # Voer MEASURINGBOX.py uit
-    subprocess.run(["python", "MEASURINGBOX.py"])
+    subprocess.run(["python3", "MEASURINGBOX.py"])
 
 def run_weather_measurement_scripts():
     # Voer WEATHER_MEASUREMENT.py uit
-    subprocess.run(["python", "WEATHER_MEASUREMENT.py"])
+    subprocess.run(["python3", "WEATHER_MEASUREMENT.py"])
 
 def main():
     # Aantal seconden in 15 minuten
@@ -31,3 +31,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
