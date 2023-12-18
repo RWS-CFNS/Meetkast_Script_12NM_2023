@@ -39,7 +39,7 @@ message = json.dumps(data)
 properties = pika.BasicProperties(
     content_type="application/json",
     content_encoding='UTF-8',
-    headers={'__TypeId__': 'nl.cfns.entity.WeatherMeasurementDto'},
+    headers={'__TypeId__': 'nl.cfns.dto.WeatherMeasurementDto'},
     delivery_mode=2,  # maak het bericht persistent
     priority=0
 )
