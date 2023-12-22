@@ -39,8 +39,3 @@ else:
 # Verbinding sluiten
 cur.close()
 conn.close()
-
-# cfns@cfns-NUC8i7BEH:~/Documents/GitHub/Meetkast_Script_12NM_2023$ python3 Haal_Data.py
-# Verbindingsstatus: 1
-# De 'personen'-tabel is leeg.
-# Geen gegevens gevonden in de 'personen'-tabel.
