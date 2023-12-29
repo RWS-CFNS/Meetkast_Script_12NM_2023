@@ -20,7 +20,7 @@ def haal_data_op():
         # Cursor maken om query's uit te voeren
         cur = conn.cursor()
 
-        # Query uitvoeren voor 'Measuringbox'
+        # Query uitvoeren voor 'measurement'
         cur.execute('SELECT * FROM personen.measurement;')
 
         # Gebruik een generator om rijen één voor één op te halen
@@ -43,8 +43,8 @@ def haal_data_op():
                 "sinr": float(row[10])  # Zet Decimal om naar float
             }
             yield data
-            # Wacht 5 seconden voordat je de volgende rij ophaalt
-            time.sleep(5)
+            # Wacht 2 seconden voordat je de volgende rij ophaalt
+            time.sleep(2)
 
     except psycopg2.Error as e:
         print("Fout bij het uitvoeren van de query voor 'measurement':", e)
