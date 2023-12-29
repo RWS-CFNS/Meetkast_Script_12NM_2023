@@ -76,7 +76,7 @@ def verstuur_data():
             properties = pika.BasicProperties(
                 content_type="application/json",
                 content_encoding='UTF-8',
-                headers={'TypeId': 'nl.cfns.entity.Measurement'},
+                headers={'__TypeId__': 'nl.cfns.entity.Measurement'},
                 delivery_mode=2,  # maak het bericht persistent
                 priority=0
             )
