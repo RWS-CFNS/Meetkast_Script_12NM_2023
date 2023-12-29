@@ -19,7 +19,7 @@ def haal_data_op():
         # Cursor maken om query's uit te voeren
         cur = conn.cursor()
 
-        # Query uitvoeren voor 'Measuringbox'
+        # Query uitvoeren voor 'weather_measurement'
         cur.execute('SELECT * FROM personen.weather_measurement;')
 
         # Gebruik een generator om rijen één voor één op te halen
@@ -38,11 +38,11 @@ def haal_data_op():
                 "pressure": float(row[7]),
             }
             yield data
-            # Wacht 5 seconden voordat je de volgende rij ophaalt
-            time.sleep(5)
+            # Wacht 2 seconden voordat je de volgende rij ophaalt
+            time.sleep(2)
 
     except psycopg2.Error as e:
-        print("Fout bij het uitvoeren van de query voor 'measuringbox':", e)
+        print("Fout bij het uitvoeren van de query voor 'weather_measurement':", e)
 
     finally:
         # Sluit de cursor en verbinding, ongeacht of er een fout is opgetreden
