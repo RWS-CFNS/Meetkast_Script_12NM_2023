@@ -2,9 +2,26 @@ import psycopg2
 import pika
 import json
 import time
-import decimal
+
+LAST_PROCESSED_ID_FILE = "last_processed_id_measurement.txt" # Dit stukje initialiseert een variabele met de waarde "last_processed_id.txt".Deze variabele wordt gebruikt om de bestandsnaam op te slaan waarin het laatst verwerkte ID wordt opgeslagen of bijgehouden. 
+
+def get_last_processed_id():
+    try:
+        with open(LAST_PROCESSED_ID_FILE, "r") as file:  # Opent het bestand LAST_PROCESSED_ID_FILE in leesmodus
+            last_processed_id = int(file.read().strip())  # Leest de inhoud van het bestand en converteert het naar een integer
+            return last_processed_id  # Geeft de gelezen ID terug
+    except FileNotFoundError:  # Vangt een 'FileNotFoundError' op als het bestand niet wordt gevonden
+        return 0  # Als het bestand niet wordt gevonden, wordt standaardwaarde 0 geretourneerd
+
+def save_last_processed_id(last_processed_id):
+    # Opent het bestand 'LAST_PROCESSED_ID_FILE' om te schrijven ('w' betekent schrijven)
+    with open(LAST_PROCESSED_ID_FILE, "w") as file:
+        # Schrijft de waarde van 'last_processed_id' naar het geopende bestand
+        file.write(str(last_processed_id))
 
 def haal_data_op():
+    last_processed_id = get_last_processed_id()  # Ophalen van het laatst verwerkte ID uit een bestand
+    
     try:
         # Verbinding maken met de database
         conn = psycopg2.connect(
@@ -21,10 +38,11 @@ def haal_data_op():
         cur = conn.cursor()
 
         # Query uitvoeren voor 'measurement'
-        cur.execute('SELECT * FROM personen.measurement;')
+        cur.execute('SELECT * FROM personen.measurement WHERE id > %s;', (last_processed_id,))  # Uitvoeren van een query om rijen op te halen met een ID groter dan het laatst verwerkte ID
 
         # Gebruik een generator om rijen één voor één op te halen
         for row in cur:
+            row_id = row[-1]  # Het ophalen van het ID uit de laatste kolom van elke rij
             # Unix-epoch conversie
             unix_time = int(row[0].timestamp())
             # Omzetten naar dictionary-formaat
@@ -42,9 +60,9 @@ def haal_data_op():
                 "rsrp": float(row[9]),  # Zet Decimal om naar float
                 "sinr": float(row[10])  # Zet Decimal om naar float
             }
-            yield data
-            # Wacht 2 seconden voordat je de volgende rij ophaalt
-            time.sleep(2)
+            yield row_id, data  # Retourneren van het ID afzonderlijk van de data
+            time.sleep(2)  # Een korte pauze van 2 seconden
+            last_processed_id = row_id  # Bijwerken van het laatst verwerkte ID met het ID van de huidige rij
 
     except psycopg2.Error as e:
         print("Fout bij het uitvoeren van de query voor 'measurement':", e)
@@ -58,6 +76,8 @@ def haal_data_op():
                 conn.close()
         except NameError:
             pass
+        
+        save_last_processed_id(last_processed_id)  # Opslaan van het laatst verwerkte ID in een bestand
 
 def verstuur_data():
     # Oproepen van haal_data_op om de gegevens op te halen
@@ -69,7 +89,7 @@ def verstuur_data():
         channel = connection.channel()
 
         # Converteer de data naar JSON met nette opmaak (inspringing)
-        for data in data_generator:
+        for id_, data in data_generator:
             message = json.dumps(data, indent=4)
 
             # Stel de berichteigenschappen in
@@ -90,7 +110,7 @@ def verstuur_data():
             )
 
             # Print de verzonden data met nette opmaak
-            print("Verzonden bericht:")
+            print(f"Verzonden bericht met ID {id_}:")
             print(message)
 
     except pika.exceptions.AMQPError as e:
