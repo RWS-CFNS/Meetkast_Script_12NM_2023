@@ -1,26 +1,39 @@
-import psycopg2
-import pika
+"""
+Module to handle measurement data retrieval and transmission.
+"""
+
 import json
 import time
+import psycopg2
+import pika
 
-LAST_PROCESSED_ID_FILE = "last_processed_id_measuringbox.txt" # Dit stukje initialiseert een variabele met de waarde "last_processed_id.txt".Deze variabele wordt gebruikt om de bestandsnaam op te slaan waarin het laatst verwerkte ID wordt opgeslagen of bijgehouden. 
+LAST_PROCESSED_ID_FILE = "last_processed_id_measuringbox.txt"
 
 def get_last_processed_id():
+    """
+    Retrieve the last processed ID from the file.
+    """
     try:
-        with open(LAST_PROCESSED_ID_FILE, "r") as file:  # Opent het bestand LAST_PROCESSED_ID_FILE in leesmodus
-            last_processed_id = int(file.read().strip())  # Leest de inhoud van het bestand en converteert het naar een integer
-            return last_processed_id  # Geeft de gelezen ID terug
-    except FileNotFoundError:  # Vangt een 'FileNotFoundError' op als het bestand niet wordt gevonden
-        return 0  # Als het bestand niet wordt gevonden, wordt standaardwaarde 0 geretourneerd
+        with open(LAST_PROCESSED_ID_FILE, "r", encoding="utf-8") as file:
+            last_processed_id = int(file.read().strip())
+            return last_processed_id
+    except FileNotFoundError:
+        return 0
+
 
 def save_last_processed_id(last_processed_id):
-    # Opent het bestand 'LAST_PROCESSED_ID_FILE' om te schrijven ('w' betekent schrijven)
-    with open(LAST_PROCESSED_ID_FILE, "w") as file:
-        # Schrijft de waarde van 'last_processed_id' naar het geopende bestand
+    """
+    Save the last processed ID to the file.
+    """
+    with open(LAST_PROCESSED_ID_FILE, "w", encoding="utf-8") as file:
         file.write(str(last_processed_id))
 
+
 def haal_data_op():
-    last_processed_id = get_last_processed_id()  # Ophalen van het laatst verwerkte ID uit een bestand
+    """
+    Retrieve measurement data from the database.
+    """
+    last_processed_id = get_last_processed_id()
 
     try:
         conn = psycopg2.connect(  # Verbinding maken met de database
@@ -45,9 +58,9 @@ def haal_data_op():
                 "status": row[4],
                 "latitude": row[5],
             }
-            yield row_id, data  # Retourneren van het ID afzonderlijk van de data
-            time.sleep(2)  # Een korte pauze van 2 seconden
-            last_processed_id = row_id  # Bijwerken van het laatst verwerkte ID met het ID van de huidige rij
+            yield row_id, data
+            time.sleep(2)
+            last_processed_id = row_id
 
     except psycopg2.Error as e:  # Het afhandelen van een PostgreSQL-fout
         print("Fout bij het uitvoeren van de query voor 'measuringbox':", e)
@@ -61,10 +74,14 @@ def haal_data_op():
         except NameError:
             pass  # Afhandelen van een NameError als die optreedt
 
-        save_last_processed_id(last_processed_id)  # Opslaan van het laatst verwerkte ID in een bestand
+        save_last_processed_id(last_processed_id)
 
 # De functie 'verstuur_data' wordt gedefinieerd
 def verstuur_data():
+    """
+    Send measurement data to the RabbitMQ server.
+    """
+
     # De generator 'data_generator' wordt aangemaakt door de functie 'haal_data_op' op te roepen
     data_generator = haal_data_op()
 
@@ -78,7 +95,6 @@ def verstuur_data():
         for id_, data in data_generator:
             # De data wordt omgezet naar een JSON-bericht met nette opmaak
             message = json.dumps(data, indent=4)
-            
             # De berichteigenschappen worden ingesteld
             properties = pika.BasicProperties(
                 content_type="application/json",
@@ -88,7 +104,6 @@ def verstuur_data():
                 priority=0
             )
 
-            # Het bericht wordt gepubliceerd naar de RabbitMQ-server met opgegeven uitwisseling en routingsleutel
             channel.basic_publish(
                 exchange='spring-boot-exchange',
                 routing_key='key.cfns.measuringbox2',
