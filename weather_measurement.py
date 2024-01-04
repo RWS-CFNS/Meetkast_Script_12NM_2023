@@ -7,11 +7,10 @@ import pika
 LAST_PROCESSED_ID_FILE = "last_processed_id_weather.txt"
 
 def get_last_processed_id():
-    """Haalt het laatst verwerkte ID op uit het tekstbestand."""
     try:
         with open(LAST_PROCESSED_ID_FILE, "r", encoding="utf-8") as file:
             last_processed_id = int(file.read().strip())
-            return "Laatste ID: " + last_processed_id
+            return last_processed_id
     except FileNotFoundError:
         return 0
 
