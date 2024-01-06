@@ -23,17 +23,14 @@ def main():
     # Aantal seconden in 15 minuten
     interval_seconds = 15 * 60
 
-    try:
-        while True:
-            print(f"Uitvoeren van metingsscripts op: {datetime.now()}")
-            # Voer de verschillende scripts uit
-            run_script("measurement.py")
-            run_script("measuringbox.py")
-            run_script("weather_measurement.py")
-            # Wacht 15 minuten voordat de scripts opnieuw worden uitgevoerd
-            time.sleep(interval_seconds)
-    except KeyboardInterrupt:
-        print("De test is voltooid.")
+    while True:
+        print(f"Uitvoeren van metingsscripts op: {datetime.now()}")
+        # Voer de verschillende scripts uit
+        run_script("measurement.py")
+        run_script("measuringbox.py")
+        run_script("weather_measurement.py")
+        # Wacht 15 minuten voordat de scripts opnieuw worden uitgevoerd
+        time.sleep(interval_seconds)
 
 if __name__ == "__main__":
     main()
